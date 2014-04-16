@@ -1,35 +1,24 @@
 package com.anubhav.testapp.unittest;
 
+import com.anubhav.testapp.common.ServerUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.net.httpserver.HttpServer;
-import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 import static junit.framework.Assert.assertEquals;
 
 /**
  * Created by Anubhav on 4/15/2014.
  */
-public class UserTest {
-
-    static final URI BASE_URI = getBaseURI();
-
-    private static URI getBaseURI() {
-        return UriBuilder.fromUri("http://localhost/").port(8080).path("TestApp").path("ws").build();
-    }
+public class UserServiceTest {
 
     @Test
     public void testUserList(){
         Client client = Client.create(new DefaultClientConfig());
-        WebResource service = client.resource(getBaseURI());
+        WebResource service = client.resource(ServerUtils.BASE_URI);
         ClientResponse resp = service.path("user").path("list")
                 .accept(MediaType.APPLICATION_JSON)
                 .get(ClientResponse.class);
@@ -42,7 +31,7 @@ public class UserTest {
     @Test
     public  void testUserById(){
         Client client = Client.create(new DefaultClientConfig());
-        WebResource service = client.resource(getBaseURI());
+        WebResource service = client.resource(ServerUtils.BASE_URI);
         ClientResponse resp = service.path("user").path("1")
                 .accept(MediaType.APPLICATION_JSON)
                 .get(ClientResponse.class);
