@@ -21,7 +21,15 @@ import java.util.Set;
 @Path("/user")
 public class UserService {
 
-    private UserDAO userDAO = new UserDAO();
+    private UserDAO userDAO = null;
+
+    public UserService() {
+        this.userDAO = new UserDAO();
+    }
+
+    public UserService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
     @Path("/list")
     @GET
