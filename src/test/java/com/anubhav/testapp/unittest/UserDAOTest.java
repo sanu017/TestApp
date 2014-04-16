@@ -20,7 +20,6 @@ public class UserDAOTest {
         try {
             userList = userDAO.getAllUsers();
         } catch (Exception e) {
-            //e.printStackTrace();
             userList = null;
         }
         assertNotNull("Exception in UserDAO.getAllUsers() method.", userList);
@@ -33,7 +32,6 @@ public class UserDAOTest {
         try {
             user = userDAO.findByInternalId(1);
         } catch (Exception e) {
-            //e.printStackTrace();
             user = null;
         }
         assertNotNull("Error finding user by internalId.", user);
@@ -45,7 +43,7 @@ public class UserDAOTest {
         User user = null;
         String exceptionMessage = null;
         try {
-            user = userDAO.findByInternalId(1);
+            user = userDAO.findByInternalId(10000);
         } catch (Exception e) {
             exceptionMessage = e.getMessage();
             user = null;

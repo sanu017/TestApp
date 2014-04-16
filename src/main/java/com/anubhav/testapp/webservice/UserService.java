@@ -7,12 +7,10 @@ import com.anubhav.testapp.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import javax.activation.MimeType;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.ws.WebServiceException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,51 +26,66 @@ public class UserService {
     @Path("/list")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<User> list(){
-        return userDAO.getAllUsers();
+    public List list() {
+        try {
+            return userDAO.getAllUsers();
+        } catch (Exception e) {
+            throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @Path("/{id}")
+    @Path("{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUser(@PathParam("id") String id){
-        return userDAO.getUser(id);
+    public User getUser(@PathParam("id") String id) {
+        User user = null;
+        try {
+            user = userDAO.findByInternalId(Integer.valueOf(id));
+        } catch (Exception e) {
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+        if (user == null) {
+            throw new WebApplicationException(new RuntimeException("User not found for id: " + id), Response.Status.NO_CONTENT);
+        }
+
+        return user;
     }
 
     @GET
     @Path("/bootstrap")
     @Produces(MediaType.APPLICATION_JSON)
-    public String bootstrap(){
+    public String bootstrap() {
         System.out.println("Start bootstrap");
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        try{
-            User u1 = new User(101, "User1",  null);
+        try {
+            User u1 = new User(101, "User1", null);
             session.save(u1);
 
-            Book b1 = new Book(101, "1212-121", "Book1 Title", "Book1 Author",  null);
+            Book b1 = new Book(101, "1212-121", "Book1 Title", "Book1 Author", null);
             session.save(b1);
-            Book b2 = new Book(101, "1212-121", "Book1 Title", "Book1 Author",  null);
+            Book b2 = new Book(101, "1212-121", "Book1 Title", "Book1 Author", null);
             session.save(b2);
-            Book b3 = new Book(101, "1212-121", "Book1 Title", "Book1 Author",  null);
+            Book b3 = new Book(101, "1212-121", "Book1 Title", "Book1 Author", null);
             session.save(b3);
-            Book b4 = new Book(101, "1212-121", "Book1 Title", "Book1 Author",  null);
+            Book b4 = new Book(101, "1212-121", "Book1 Title", "Book1 Author", null);
             session.save(b4);
-            Book b5 = new Book(101, "1212-121", "Book1 Title", "Book1 Author",  null);
+            Book b5 = new Book(101, "1212-121", "Book1 Title", "Book1 Author", null);
             session.save(b5);
 
             Set<Book> bookSet = new HashSet<Book>();
             bookSet.add(b1);
             bookSet.add(b2);
-            User u2 = new User(102,  "User2", bookSet);
+            User u2 = new User(102, "User2", bookSet);
             session.save(u2);
             transaction.commit();
             return "success";
-        }catch(Exception  e){
+        } catch (Exception e) {
             e.printStackTrace();
             transaction.rollback();
             return e.getMessage();
-        }finally {
+        } finally {
             session.close();
             System.out.println("End bootstrap");
         }

@@ -11,27 +11,27 @@ import java.util.List;
  */
 public class UserDAO {
 
-    public List getAllUsers() {
+    public List getAllUsers() throws Exception {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             return session.createQuery("from User").list();
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
-        return null;
     }
 
-    public User getUser(String internalId){
+    public User findByInternalId(Integer internalId) throws Exception {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
-            return (User) session.get(User.class, Integer.valueOf(internalId));
+            return (User) session.get(User.class, internalId);
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
-        return null;
     }
 }

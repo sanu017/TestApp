@@ -21,7 +21,7 @@
 
         <property name="format_sql">true</property>
 
-        <property name="hbm2ddl.auto">create</property>
+        <!--<property name="hbm2ddl.auto">create</property>-->
 
         <mapping resource="com/anubhav/testapp/object/User.hbm.xml"/>
         <mapping resource="com/anubhav/testapp/object/Book.hbm.xml"/>
